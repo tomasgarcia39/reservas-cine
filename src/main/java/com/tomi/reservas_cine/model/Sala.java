@@ -22,7 +22,7 @@ public class Sala {
         this.nombre = nombre;
         this.capacidad = capacidad;
     }
-    public Long getrId(){ return id ;}
+    public Long getId(){ return id ;}
     public String getNombre(){return nombre;}
     public int getCapacidad(){ return capacidad;}
 
