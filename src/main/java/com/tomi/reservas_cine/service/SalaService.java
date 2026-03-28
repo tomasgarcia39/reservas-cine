@@ -10,13 +10,23 @@ import java.util.List;
 public class SalaService {
     private final SalaRepository salaRepository;
 
-    public SalaService(SalaRepository salaRepository){
+    private final AsientoService asientoService;
+
+    public SalaService(SalaRepository salaRepository, AsientoService asientoService) {
         this.salaRepository = salaRepository;
+        this.asientoService = asientoService;
     }
-    public  List<Sala> obtenerSalas(){
+    public List<Sala> obtenerSalas() {
         return salaRepository.findAll();
     }
-    public Sala guardarSala(Sala sala){
-        return salaRepository.save(sala);
+
+    public Sala guardarSala(Sala sala) {
+        Sala salaguardada = salaRepository.save(sala);
+        asientoService.generarAsientos(salaguardada);
+        return salaguardada;
+    }
+    public void eliminarSala(Long id) {
+        asientoService.eliminarAsientosPorSala(id);
+        salaRepository.deleteById(id);
     }
 }

@@ -23,4 +23,9 @@ public class SalaController {
     public Sala crearSala(@RequestBody Sala sala){
         return salaService.guardarSala(sala);
     }
+    @DeleteMapping("/{id}")
+    public String eliminarSala(@PathVariable Long id) {
+        salaService.eliminarSala(id);
+        return "Sala eliminada con exito";
+    }
 }
