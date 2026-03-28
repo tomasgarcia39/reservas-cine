@@ -1,5 +1,6 @@
 package com.tomi.reservas_cine.service;
 
+import com.tomi.reservas_cine.exception.SalaNoEncontradaException;
 import com.tomi.reservas_cine.model.Funcion;
 import com.tomi.reservas_cine.model.Sala;
 import com.tomi.reservas_cine.repository.FuncionRepository;
@@ -25,7 +26,7 @@ public class FuncionService {
 
     public Funcion crearFuncion(Long salaId, String pelicula, String horario) {
         Sala sala = salaRepository.findById(salaId)
-                .orElseThrow(() -> new RuntimeException("Sala no encontrada"));
+                .orElseThrow(() -> new SalaNoEncontradaException(salaId));
         Funcion funcion = new Funcion(pelicula, java.time.LocalDateTime.parse(horario), sala);
         return funcionRepository.save(funcion);
     }

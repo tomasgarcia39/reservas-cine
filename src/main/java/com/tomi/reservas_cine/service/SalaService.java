@@ -1,5 +1,6 @@
 package com.tomi.reservas_cine.service;
 
+import com.tomi.reservas_cine.exception.SalaNoEncontradaException;
 import com.tomi.reservas_cine.model.Sala;
 import com.tomi.reservas_cine.repository.SalaRepository;
 import org.springframework.stereotype.Service;
@@ -8,14 +9,15 @@ import java.util.List;
 
 @Service
 public class SalaService {
-    private final SalaRepository salaRepository;
 
+    private final SalaRepository salaRepository;
     private final AsientoService asientoService;
 
     public SalaService(SalaRepository salaRepository, AsientoService asientoService) {
         this.salaRepository = salaRepository;
         this.asientoService = asientoService;
     }
+
     public List<Sala> obtenerSalas() {
         return salaRepository.findAll();
     }
@@ -25,7 +27,11 @@ public class SalaService {
         asientoService.generarAsientos(salaguardada);
         return salaguardada;
     }
+
     public void eliminarSala(Long id) {
+        if (!salaRepository.existsById(id)) {
+            throw new SalaNoEncontradaException(id);
+        }
         asientoService.eliminarAsientosPorSala(id);
         salaRepository.deleteById(id);
     }

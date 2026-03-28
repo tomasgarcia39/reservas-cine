@@ -17,9 +17,7 @@ public class AsientoService {
     }
 
     public List<Asiento> obtenerAsientosPorSala(Long salaId) {
-        return asientoRepository.findAll().stream()
-                .filter(a -> a.getSala().getId().equals(salaId))
-                .toList();
+        return asientoRepository.findBySalaId(salaId);
     }
 
     public void generarAsientos(Sala sala) {
