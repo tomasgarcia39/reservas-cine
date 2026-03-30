@@ -24,7 +24,9 @@ public class FuncionController {
     @PostMapping
     public Funcion crearFuncion(@RequestParam Long salaId,
                                 @RequestParam String pelicula,
-                                @RequestParam String horario) {
-        return funcionService.crearFuncion(salaId, pelicula, horario);
+                                @RequestParam String horario,
+                                @RequestParam int duracionMinutos) {
+        return funcionService.crearFuncion(salaId, pelicula, horario, duracionMinutos);
     }
+
 }

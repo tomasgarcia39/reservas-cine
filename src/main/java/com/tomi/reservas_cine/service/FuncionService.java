@@ -26,15 +26,16 @@ public class FuncionService {
         return funcionRepository.findAll();
     }
 
-    public Funcion crearFuncion(Long salaId, String pelicula, String horario) {
+    public Funcion crearFuncion(Long salaId, String pelicula, String horario, int duracionMinutos) {
         Sala sala = salaRepository.findById(salaId)
                 .orElseThrow(() -> new AppException(ErrorCode.SALA_NO_ENCONTRADA));
 
-        if (funcionRepository.existsBySalaIdAndHorario(salaId, LocalDateTime.parse(horario))) {
+        if (funcionRepository.existsSolapamiento(salaId, LocalDateTime.parse(horario))) {
             throw new AppException(ErrorCode.FUNCION_DUPLICADA);
         }
 
-        Funcion funcion = new Funcion(pelicula, LocalDateTime.parse(horario), sala);
+        Funcion funcion = new Funcion(pelicula, LocalDateTime.parse(horario), sala, duracionMinutos);
         return funcionRepository.save(funcion);
+
     }
 }
