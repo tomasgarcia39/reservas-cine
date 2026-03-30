@@ -7,6 +7,8 @@ import com.tomi.reservas_cine.model.Sala;
 import com.tomi.reservas_cine.repository.FuncionRepository;
 import com.tomi.reservas_cine.repository.SalaRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,7 +29,12 @@ public class FuncionService {
     public Funcion crearFuncion(Long salaId, String pelicula, String horario) {
         Sala sala = salaRepository.findById(salaId)
                 .orElseThrow(() -> new AppException(ErrorCode.SALA_NO_ENCONTRADA));
-        Funcion funcion = new Funcion(pelicula, java.time.LocalDateTime.parse(horario), sala);
+
+        if (funcionRepository.existsBySalaIdAndHorario(salaId, LocalDateTime.parse(horario))) {
+            throw new AppException(ErrorCode.FUNCION_DUPLICADA);
+        }
+
+        Funcion funcion = new Funcion(pelicula, LocalDateTime.parse(horario), sala);
         return funcionRepository.save(funcion);
     }
 }
