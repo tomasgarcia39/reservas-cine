@@ -2,9 +2,7 @@ package com.tomi.reservas_cine.service;
 
 import com.tomi.reservas_cine.dto.ReservaRequestDTO;
 import com.tomi.reservas_cine.dto.ReservaResponseDTO;
-import com.tomi.reservas_cine.exception.AsientoNoDisponibleException;
-import com.tomi.reservas_cine.exception.AsientoNoEncontradoException;
-import com.tomi.reservas_cine.exception.FuncionNoEncontradaException;
+import com.tomi.reservas_cine.exception.*;
 import com.tomi.reservas_cine.model.Asiento;
 import com.tomi.reservas_cine.model.Funcion;
 import com.tomi.reservas_cine.model.Reserva;
@@ -33,20 +31,19 @@ public class ReservaService {
 
     @Transactional
     public ReservaResponseDTO reservar(ReservaRequestDTO dto) {
-        Funcion funcion = funcionRepository.findById(dto.getFuncionId())
-                .orElseThrow(() -> new FuncionNoEncontradaException(dto.getFuncionId()));
-
-        Asiento asiento = asientoRepository.findById(dto.getAsientoId())
-                .orElseThrow(() -> new AsientoNoEncontradoException(dto.getAsientoId()));
+        Funcion funcion = funcionRepository.findById(dto.funcionId())
+                .orElseThrow(() -> new AppException(ErrorCode.FUNCION_NO_ENCONTRADA));
+        Asiento asiento = asientoRepository.findById(dto.asientoId())
+                .orElseThrow(() -> new AppException(ErrorCode.ASIENTO_NO_ENCONTRADO));
 
         if (!asiento.isDisponible()) {
-            throw new AsientoNoDisponibleException(dto.getAsientoId());
+            throw new AppException(ErrorCode.ASIENTO_NO_DISPONIBLE);
         }
 
         asiento.setDisponible(false);
         asientoRepository.save(asiento);
 
-        Reserva reserva = new Reserva(dto.getNombreUsuario(), funcion, asiento);
+        Reserva reserva = new Reserva(dto.nombreUsuario(), funcion, asiento);
         Reserva guardada = reservaRepository.save(reserva);
 
         return new ReservaResponseDTO(

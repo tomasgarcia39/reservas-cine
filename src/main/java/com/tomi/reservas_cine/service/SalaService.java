@@ -1,5 +1,7 @@
 package com.tomi.reservas_cine.service;
 
+import com.tomi.reservas_cine.exception.AppException;
+import com.tomi.reservas_cine.exception.ErrorCode;
 import com.tomi.reservas_cine.exception.SalaNoEncontradaException;
 import com.tomi.reservas_cine.model.Sala;
 import com.tomi.reservas_cine.repository.SalaRepository;
@@ -30,7 +32,7 @@ public class SalaService {
 
     public void eliminarSala(Long id) {
         if (!salaRepository.existsById(id)) {
-            throw new SalaNoEncontradaException(id);
+            throw new AppException(ErrorCode.SALA_NO_ENCONTRADA);
         }
         asientoService.eliminarAsientosPorSala(id);
         salaRepository.deleteById(id);
