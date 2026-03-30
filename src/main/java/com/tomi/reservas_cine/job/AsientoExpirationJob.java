@@ -1,7 +1,6 @@
 package com.tomi.reservas_cine.job;
 
 import com.tomi.reservas_cine.model.EstadoAsiento;
-import com.tomi.reservas_cine.model.EstadoAsiento;
 import com.tomi.reservas_cine.repository.AsientoRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

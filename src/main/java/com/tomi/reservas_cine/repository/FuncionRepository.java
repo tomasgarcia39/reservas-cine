@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 
 public interface FuncionRepository extends JpaRepository<Funcion, Long> {
-    boolean existsBySalaIdAndHorario(Long salaId, LocalDateTime horario);
     @Query(value = "SELECT COUNT(*) > 0 FROM funcion WHERE sala_id = :salaId " +
             "AND :horario < horario + (duracion_minutos + 10) * interval '1 minute' " +
             "AND :horario >= horario", nativeQuery = true)

@@ -19,12 +19,6 @@ public class Funcion {
 
     public Funcion() {}
 
-    public Funcion(String pelicula, LocalDateTime horario, Sala sala) {
-        this.pelicula = pelicula;
-        this.horario = horario;
-        this.sala = sala;
-
-    }
     public Funcion(String pelicula, LocalDateTime horario, Sala sala, int duracionMinutos) {
         this.pelicula = pelicula;
         this.horario = horario;
