@@ -2,7 +2,6 @@ package com.tomi.reservas_cine.service;
 
 import com.tomi.reservas_cine.exception.AppException;
 import com.tomi.reservas_cine.exception.ErrorCode;
-import com.tomi.reservas_cine.exception.SalaNoEncontradaException;
 import com.tomi.reservas_cine.model.Funcion;
 import com.tomi.reservas_cine.model.Sala;
 import com.tomi.reservas_cine.repository.FuncionRepository;
