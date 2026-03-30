@@ -2,19 +2,17 @@ package com.tomi.reservas_cine.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-public class ReservaRequestDTO {
+public record ReservaRequestDTO(
+        @NotBlank(message = "El nombre de usuario no puede estar vacío")
+        String nombreUsuario,
 
-    @NotBlank(message = "El nombre de usuario no puede estar vacio")
-    private String nombreUsuario;
+        @NotNull(message = "La función es obligatoria")
+        @Positive(message = "El id de la función debe ser mayor a 0")
+        Long funcionId,
 
-    @NotNull(message = "La funcion es obligatoria")
-    private Long funcionId;
-
-    @NotNull(message = "El asiento es obligatorio")
-    private Long asientoId;
-
-    public String getNombreUsuario() { return nombreUsuario; }
-    public Long getFuncionId() { return funcionId; }
-    public Long getAsientoId() { return asientoId; }
-}
+        @NotNull(message = "El asiento es obligatorio")
+        @Positive(message = "El id del asiento debe ser mayor a 0")
+        Long asientoId
+) {}
