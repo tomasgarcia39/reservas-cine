@@ -7,7 +7,9 @@ public enum ErrorCode {
     FUNCION_NO_ENCONTRADA(HttpStatus.NOT_FOUND, "La funcion no existe"),
     ASIENTO_NO_ENCONTRADO(HttpStatus.NOT_FOUND, "El asiento no existe"),
     ASIENTO_NO_DISPONIBLE(HttpStatus.CONFLICT, "El asiento ya esta reservado"),
-    FUNCION_DUPLICADA(HttpStatus.CONFLICT, "Ya existe una funcion en esa sala a ese horario");
+    FUNCION_DUPLICADA(HttpStatus.CONFLICT, "Ya existe una funcion en esa sala a ese horario"),
+    ASIENTO_NO_DISPONIBLE_TEMP(HttpStatus.CONFLICT, "El asiento esta siendo reservado por otro usuario"),
+    RESERVA_NO_ENCONTRADA(HttpStatus.NOT_FOUND, "La reserva no existe");
 
     private final HttpStatus status;
     private final String mensaje;

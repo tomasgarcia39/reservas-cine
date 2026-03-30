@@ -28,4 +28,8 @@ public class ReservaController {
     public ReservaResponseDTO reservar(@Valid @RequestBody ReservaRequestDTO dto) {
         return reservaService.reservar(dto);
     }
+    @PostMapping("/{id}/confirmar")
+    public ReservaResponseDTO confirmar(@PathVariable Long id) {
+        return reservaService.confirmarReserva(id);
+    }
 }

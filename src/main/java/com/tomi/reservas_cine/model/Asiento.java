@@ -1,6 +1,8 @@
 package com.tomi.reservas_cine.model;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Asiento {
 
@@ -10,8 +12,8 @@ public class Asiento {
 
     private int numero;
     private String tipo;
-    private boolean disponible;
-
+    private EstadoAsiento estado;
+    private LocalDateTime expiracion;
     @ManyToOne
     private Sala sala;
 
@@ -20,14 +22,17 @@ public class Asiento {
     public Asiento(int numero, String tipo, Sala sala){
         this.numero = numero;
         this. tipo= tipo;
-        this.disponible = true;
+        this.estado = EstadoAsiento.DISPONIBLE;
         this.sala = sala;
     }
 public Long getId(){return id;}
 public int getNumero(){return numero;}
 public String getTipo(){return tipo;}
-public boolean isDisponible(){return disponible;}
 public Sala getSala(){return sala;}
-public void setDisponible(boolean disponible){this.disponible = disponible;}
+    public EstadoAsiento getEstado(){return estado;}
+    public LocalDateTime getExpiracion(){return expiracion;}
+    public void setEstado(EstadoAsiento estado){this.estado = estado;}
+    public void setExpiracion(LocalDateTime expiracion){this.expiracion = expiracion;}
+
 
 }
