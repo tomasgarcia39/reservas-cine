@@ -20,7 +20,7 @@ public class ReservaController {
     }
 
     @GetMapping
-    public List<Reserva> listarReservas() {
+    public List<ReservaResponseDTO> listarReservas() {
         return reservaService.obtenerReservas();
     }
 

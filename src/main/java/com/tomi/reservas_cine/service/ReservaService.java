@@ -64,8 +64,16 @@ public class ReservaService {
         );
     }
 
-    public List<Reserva> obtenerReservas() {
-        return reservaRepository.findAll();
+    public List<ReservaResponseDTO> obtenerReservas() {
+        return reservaRepository.findAll().stream()
+                .map(reserva -> new ReservaResponseDTO(
+                        reserva.getId(),
+                        reserva.getNombreUsuario(),
+                        reserva.getFuncion().getPelicula(),
+                        reserva.getFuncion().getHorario().toString(),
+                        reserva.getAsiento().getNumero()
+                ))
+                .toList();
     }
     @Transactional
     public ReservaResponseDTO confirmarReserva(Long reservaId) {
