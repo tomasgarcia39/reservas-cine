@@ -164,7 +164,10 @@ class ReservasCineApplicationTests {
 		Sala sala = new Sala("Sala 1", 3);
 		when(salaRepository.save(any())).thenReturn(sala);
 
-		assertDoesNotThrow(() -> salaService.guardarSala(sala));
+		var resultado = salaService.guardarSala(sala);
+
+		assertNotNull(resultado);
+		assertEquals("Sala 1", resultado.nombre());
 		verify(asientoService).generarAsientos(sala);
 	}
 
@@ -188,15 +191,20 @@ class ReservasCineApplicationTests {
 		assertEquals(ErrorCode.FUNCION_DUPLICADA, ex.getErrorCode());
 	}
 
+
 	@Test
 	void crearFuncion_cuandoTodoOk_creaFuncion() {
 		Sala sala = new Sala("Sala 1", 10);
+		Funcion funcionMock = new Funcion("Inception", LocalDateTime.parse("2026-03-30T20:00:00"), sala, 120);
 		when(salaRepository.findById(1L)).thenReturn(Optional.of(sala));
 		when(funcionRepository.existsSolapamiento(any(), any())).thenReturn(false);
-		when(funcionRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+		when(funcionRepository.save(any())).thenReturn(funcionMock);
 
-		assertDoesNotThrow(() -> funcionService.crearFuncion(1L, "Inception", "2026-03-30T20:00:00", 120));
-		verify(funcionRepository).save(any());
+		var resultado = funcionService.crearFuncion(1L, "Inception", "2026-03-30T20:00:00", 120);
+
+		assertNotNull(resultado);
+		assertEquals("Inception", resultado.pelicula());
+		assertEquals("Sala 1", resultado.nombreSala());
 	}
 
 	@Test
