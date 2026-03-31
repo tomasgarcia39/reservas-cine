@@ -1,7 +1,7 @@
 package com.tomi.reservas_cine.controller;
 
 import com.tomi.reservas_cine.dto.FuncionRequestDTO;
-import com.tomi.reservas_cine.model.Funcion;
+import com.tomi.reservas_cine.dto.FuncionResponseDTO;
 import com.tomi.reservas_cine.service.FuncionService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +19,12 @@ public class FuncionController {
     }
 
     @GetMapping
-    public List<Funcion> listarFunciones() {
+    public List<FuncionResponseDTO> listarFunciones() {
         return funcionService.obtenerFunciones();
     }
 
-
     @PostMapping
-    public Funcion crearFuncion(@RequestBody @Valid FuncionRequestDTO dto) {
+    public FuncionResponseDTO crearFuncion(@RequestBody @Valid FuncionRequestDTO dto) {
         return funcionService.crearFuncion(dto.salaId(), dto.pelicula(), dto.horario(), dto.duracionMinutos());
     }
-
 }

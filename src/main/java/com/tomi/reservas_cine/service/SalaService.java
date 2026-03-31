@@ -1,5 +1,6 @@
 package com.tomi.reservas_cine.service;
 
+import com.tomi.reservas_cine.dto.SalaResponseDTO;
 import com.tomi.reservas_cine.exception.AppException;
 import com.tomi.reservas_cine.exception.ErrorCode;
 import com.tomi.reservas_cine.model.Sala;
@@ -19,14 +20,16 @@ public class SalaService {
         this.asientoService = asientoService;
     }
 
-    public List<Sala> obtenerSalas() {
-        return salaRepository.findAll();
+    public List<SalaResponseDTO> obtenerSalas() {
+        return salaRepository.findAll().stream()
+                .map(sala -> new SalaResponseDTO(sala.getId(), sala.getNombre(), sala.getCapacidad()))
+                .toList();
     }
 
-    public Sala guardarSala(Sala sala) {
+    public SalaResponseDTO guardarSala(Sala sala) {
         Sala salaguardada = salaRepository.save(sala);
         asientoService.generarAsientos(salaguardada);
-        return salaguardada;
+        return new SalaResponseDTO(salaguardada.getId(), salaguardada.getNombre(), salaguardada.getCapacidad());
     }
 
     public void eliminarSala(Long id) {

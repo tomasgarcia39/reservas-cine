@@ -1,6 +1,6 @@
 package com.tomi.reservas_cine.controller;
 
-import com.tomi.reservas_cine.model.Asiento;
+import com.tomi.reservas_cine.dto.AsientoResponseDTO;
 import com.tomi.reservas_cine.service.AsientoService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +17,7 @@ public class AsientoController {
     }
 
     @GetMapping("/sala/{salaId}")
-    public List<Asiento> listarAsientosPorSala(@PathVariable Long salaId) {
+    public List<AsientoResponseDTO> listarAsientosPorSala(@PathVariable Long salaId) {
         return asientoService.obtenerAsientosPorSala(salaId);
     }
 }

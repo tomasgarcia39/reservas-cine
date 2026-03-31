@@ -1,5 +1,6 @@
 package com.tomi.reservas_cine.service;
 
+import com.tomi.reservas_cine.dto.AsientoResponseDTO;
 import com.tomi.reservas_cine.model.Asiento;
 import com.tomi.reservas_cine.model.Sala;
 import com.tomi.reservas_cine.repository.AsientoRepository;
@@ -16,10 +17,16 @@ public class AsientoService {
         this.asientoRepository = asientoRepository;
     }
 
-    public List<Asiento> obtenerAsientosPorSala(Long salaId) {
-        return asientoRepository.findBySalaId(salaId);
+    public List<AsientoResponseDTO> obtenerAsientosPorSala(Long salaId) {
+        return asientoRepository.findBySalaId(salaId).stream()
+                .map(a -> new AsientoResponseDTO(
+                        a.getId(),
+                        a.getNumero(),
+                        a.getTipo(),
+                        a.getEstado().name(),
+                        a.getSala().getNombre()))
+                .toList();
     }
-
     public void generarAsientos(Sala sala) {
         for (int i = 1; i <= sala.getCapacidad(); i++) {
             Asiento asiento = new Asiento(i, "ESTANDAR", sala);
@@ -28,7 +35,7 @@ public class AsientoService {
     }
 
     public void eliminarAsientosPorSala(Long salaId) {
-        List<Asiento> asientos = obtenerAsientosPorSala(salaId);
+        List<Asiento> asientos = asientoRepository.findBySalaId(salaId);
         asientoRepository.deleteAll(asientos);
     }
-}
+    }

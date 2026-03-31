@@ -204,9 +204,10 @@ class ReservasCineApplicationTests {
 		Sala sala = new Sala("Sala 1", 10);
 		Asiento a1 = new Asiento(1, "ESTANDAR", sala);
 		Asiento a2 = new Asiento(2, "ESTANDAR", sala);
-		when(asientoService.obtenerAsientosPorSala(1L)).thenReturn(List.of(a1, a2));
+		when(asientoRepository.findBySalaId(1L)).thenReturn(List.of(a1, a2));
 
-		var resultado = asientoService.obtenerAsientosPorSala(1L);
+		// testeamos directamente el repository porque asientoService es mock
+		var resultado = asientoRepository.findBySalaId(1L);
 
 		assertEquals(2, resultado.size());
 	}

@@ -1,5 +1,6 @@
 package com.tomi.reservas_cine.service;
 
+import com.tomi.reservas_cine.dto.FuncionResponseDTO;
 import com.tomi.reservas_cine.exception.AppException;
 import com.tomi.reservas_cine.exception.ErrorCode;
 import com.tomi.reservas_cine.model.Funcion;
@@ -22,11 +23,18 @@ public class FuncionService {
         this.salaRepository = salaRepository;
     }
 
-    public List<Funcion> obtenerFunciones() {
-        return funcionRepository.findAll();
+    public List<FuncionResponseDTO> obtenerFunciones() {
+        return funcionRepository.findAll().stream()
+                .map(f -> new FuncionResponseDTO(
+                        f.getId(),
+                        f.getPelicula(),
+                        f.getHorario().toString(),
+                        f.getDuracionMinutos(),
+                        f.getSala().getNombre()))
+                .toList();
     }
 
-    public Funcion crearFuncion(Long salaId, String pelicula, String horario, int duracionMinutos) {
+    public FuncionResponseDTO crearFuncion(Long salaId, String pelicula, String horario, int duracionMinutos) {
         Sala sala = salaRepository.findById(salaId)
                 .orElseThrow(() -> new AppException(ErrorCode.SALA_NO_ENCONTRADA));
 
@@ -35,7 +43,12 @@ public class FuncionService {
         }
 
         Funcion funcion = new Funcion(pelicula, LocalDateTime.parse(horario), sala, duracionMinutos);
-        return funcionRepository.save(funcion);
-
+        Funcion guardada = funcionRepository.save(funcion);
+        return new FuncionResponseDTO(
+                guardada.getId(),
+                guardada.getPelicula(),
+                guardada.getHorario().toString(),
+                guardada.getDuracionMinutos(),
+                guardada.getSala().getNombre());
     }
-}
+    }
