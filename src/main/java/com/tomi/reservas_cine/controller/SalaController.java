@@ -26,6 +26,7 @@ public class SalaController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public SalaResponseDTO crearSala(@RequestBody @Valid SalaRequestDTO dto) {
         return salaService.guardarSala(new Sala(dto.nombre(), dto.capacidad()));
     }

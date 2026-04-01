@@ -4,6 +4,7 @@ import com.tomi.reservas_cine.dto.FuncionRequestDTO;
 import com.tomi.reservas_cine.dto.FuncionResponseDTO;
 import com.tomi.reservas_cine.service.FuncionService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class FuncionController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public FuncionResponseDTO crearFuncion(@RequestBody @Valid FuncionRequestDTO dto) {
         return funcionService.crearFuncion(dto.salaId(), dto.pelicula(), dto.horario(), dto.duracionMinutos());
     }

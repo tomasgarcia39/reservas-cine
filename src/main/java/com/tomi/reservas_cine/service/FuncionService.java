@@ -10,6 +10,7 @@ import com.tomi.reservas_cine.repository.SalaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Service
@@ -38,11 +39,18 @@ public class FuncionService {
         Sala sala = salaRepository.findById(salaId)
                 .orElseThrow(() -> new AppException(ErrorCode.SALA_NO_ENCONTRADA));
 
-        if (funcionRepository.existsSolapamiento(salaId, LocalDateTime.parse(horario))) {
+        LocalDateTime horarioParseado;
+        try {
+            horarioParseado = LocalDateTime.parse(horario);
+        } catch (DateTimeParseException e) {
+            throw new AppException(ErrorCode.HORARIO_INVALIDO);
+        }
+
+        if (funcionRepository.existsSolapamiento(salaId, horarioParseado)) {
             throw new AppException(ErrorCode.FUNCION_DUPLICADA);
         }
 
-        Funcion funcion = new Funcion(pelicula, LocalDateTime.parse(horario), sala, duracionMinutos);
+        Funcion funcion = new Funcion(pelicula, horarioParseado, sala, duracionMinutos);
         Funcion guardada = funcionRepository.save(funcion);
         return new FuncionResponseDTO(
                 guardada.getId(),
@@ -51,4 +59,4 @@ public class FuncionService {
                 guardada.getDuracionMinutos(),
                 guardada.getSala().getNombre());
     }
-    }
+}

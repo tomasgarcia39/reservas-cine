@@ -5,6 +5,7 @@ import com.tomi.reservas_cine.dto.ReservaResponseDTO;
 import com.tomi.reservas_cine.model.Reserva;
 import com.tomi.reservas_cine.service.ReservaService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class ReservaController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ReservaResponseDTO reservar(@Valid @RequestBody ReservaRequestDTO dto) {
         return reservaService.reservar(dto);
     }

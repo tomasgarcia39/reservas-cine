@@ -9,8 +9,8 @@ public enum ErrorCode {
     ASIENTO_NO_DISPONIBLE(HttpStatus.CONFLICT, "El asiento ya esta reservado"),
     FUNCION_DUPLICADA(HttpStatus.CONFLICT, "Ya existe una funcion en esa sala a ese horario"),
     ASIENTO_NO_DISPONIBLE_TEMP(HttpStatus.CONFLICT, "El asiento esta siendo reservado por otro usuario"),
-    RESERVA_NO_ENCONTRADA(HttpStatus.NOT_FOUND, "La reserva no existe");
-
+    RESERVA_NO_ENCONTRADA(HttpStatus.NOT_FOUND, "La reserva no existe"),
+    HORARIO_INVALIDO(HttpStatus.BAD_REQUEST, "Formato de horario inválido. Use: yyyy-MM-ddTHH:mm:ss");
     private final HttpStatus status;
     private final String mensaje;
 
