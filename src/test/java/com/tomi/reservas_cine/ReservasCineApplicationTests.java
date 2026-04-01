@@ -3,6 +3,7 @@ package com.tomi.reservas_cine;
 import com.tomi.reservas_cine.dto.ReservaRequestDTO;
 import com.tomi.reservas_cine.exception.AppException;
 import com.tomi.reservas_cine.exception.ErrorCode;
+import com.tomi.reservas_cine.job.AsientoExpirationJob;
 import com.tomi.reservas_cine.model.*;
 import com.tomi.reservas_cine.repository.AsientoRepository;
 import com.tomi.reservas_cine.repository.FuncionRepository;
@@ -47,6 +48,8 @@ class ReservasCineApplicationTests {
 	private SalaService salaService;
 	@InjectMocks
 	private FuncionService funcionService;
+	@InjectMocks
+	private AsientoExpirationJob asientoExpirationJob;
 
 	private ReservaRequestDTO dto;
 	private Funcion funcion;
@@ -218,5 +221,33 @@ class ReservasCineApplicationTests {
 		var resultado = asientoRepository.findBySalaId(1L);
 
 		assertEquals(2, resultado.size());
+	}
+	@Test
+	void liberarAsientosExpirados_liberaAsientosVencidos() {
+		Sala sala = new Sala("Sala 1", 10);
+		Asiento asiento1 = new Asiento(1, "ESTANDAR", sala);
+		asiento1.setEstado(EstadoAsiento.RESERVADO_TEMP);
+		asiento1.setExpiracion(LocalDateTime.now().minusMinutes(5));
+
+		when(asientoRepository.findByEstadoAndExpiracionBefore(
+				eq(EstadoAsiento.RESERVADO_TEMP), any(LocalDateTime.class)))
+				.thenReturn(List.of(asiento1));
+
+		asientoExpirationJob.liberarAsientosExpirados();
+
+		assertEquals(EstadoAsiento.DISPONIBLE, asiento1.getEstado());
+		assertNull(asiento1.getExpiracion());
+		verify(asientoRepository).save(asiento1);
+	}
+
+	@Test
+	void liberarAsientosExpirados_cuandoNoHayVencidos_noHaceNada() {
+		when(asientoRepository.findByEstadoAndExpiracionBefore(
+				eq(EstadoAsiento.RESERVADO_TEMP), any(LocalDateTime.class)))
+				.thenReturn(List.of());
+
+		asientoExpirationJob.liberarAsientosExpirados();
+
+		verify(asientoRepository, never()).save(any());
 	}
 }
