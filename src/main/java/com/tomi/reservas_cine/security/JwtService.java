@@ -13,7 +13,8 @@ import java.util.Date;
 public class JwtService {
 
     private static final String SECRET = "clave-super-secreta-de-al-menos-32-caracteres";
-    private static final long EXPIRATION = 1000 * 60 * 60 * 24;
+    private static final long EXPIRATION = 1000 * 60 * 15;
+    private static final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24 * 7;
 
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
@@ -25,6 +26,15 @@ public class JwtService {
                 .claim("rol", rol)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .signWith(getKey())
+                .compact();
+    }
+
+    public String generarRefreshToken(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION))
                 .signWith(getKey())
                 .compact();
     }
@@ -41,6 +51,15 @@ public class JwtService {
         try {
             getClaims(token);
             return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean esRefreshTokenValido(String token, String email) {
+        try {
+            String emailExtraido = extraerEmail(token);
+            return emailExtraido.equals(email) && esValido(token);
         } catch (Exception e) {
             return false;
         }

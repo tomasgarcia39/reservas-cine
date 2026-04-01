@@ -2,6 +2,7 @@ package com.tomi.reservas_cine.controller;
 
 import com.tomi.reservas_cine.dto.AuthResponseDTO;
 import com.tomi.reservas_cine.dto.LoginRequestDTO;
+import com.tomi.reservas_cine.dto.RefreshRequestDTO;
 import com.tomi.reservas_cine.dto.RegisterRequestDTO;
 import com.tomi.reservas_cine.service.AuthService;
 import jakarta.validation.Valid;
@@ -28,4 +29,9 @@ public class AuthController {
     public AuthResponseDTO login(@Valid @RequestBody LoginRequestDTO dto) {
         return authService.login(dto);
     }
+    @PostMapping("/refresh")
+    public AuthResponseDTO refresh(@Valid @RequestBody RefreshRequestDTO dto) {
+        return authService.refresh(dto.refreshToken());
+    }
+
 }

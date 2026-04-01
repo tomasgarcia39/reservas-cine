@@ -1,4 +1,3 @@
-
 package com.tomi.reservas_cine.service;
 
 import com.tomi.reservas_cine.dto.AuthResponseDTO;
@@ -41,7 +40,8 @@ public class AuthService {
 
         usuarioRepository.save(usuario);
         String token = jwtService.generarToken(usuario.getEmail(), usuario.getRol().name());
-        return new AuthResponseDTO(token, usuario.getEmail(), usuario.getRol().name());
+        String refreshToken = jwtService.generarRefreshToken(usuario.getEmail());
+        return new AuthResponseDTO(token, refreshToken, usuario.getEmail(), usuario.getRol().name());
     }
 
     public AuthResponseDTO login(LoginRequestDTO dto) {
@@ -53,6 +53,22 @@ public class AuthService {
         }
 
         String token = jwtService.generarToken(usuario.getEmail(), usuario.getRol().name());
-        return new AuthResponseDTO(token, usuario.getEmail(), usuario.getRol().name());
+        String refreshToken = jwtService.generarRefreshToken(usuario.getEmail());
+        return new AuthResponseDTO(token, refreshToken, usuario.getEmail(), usuario.getRol().name());
+    }
+
+    public AuthResponseDTO refresh(String refreshToken) {
+        String email = jwtService.extraerEmail(refreshToken);
+
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.CREDENCIALES_INVALIDAS));
+
+        if (!jwtService.esRefreshTokenValido(refreshToken, email)) {
+            throw new AppException(ErrorCode.TOKEN_INVALIDO);
+        }
+
+        String nuevoToken = jwtService.generarToken(usuario.getEmail(), usuario.getRol().name());
+        String nuevoRefreshToken = jwtService.generarRefreshToken(usuario.getEmail());
+        return new AuthResponseDTO(nuevoToken, nuevoRefreshToken, usuario.getEmail(), usuario.getRol().name());
     }
 }

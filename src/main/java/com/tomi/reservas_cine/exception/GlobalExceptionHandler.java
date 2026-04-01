@@ -34,10 +34,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
         return ResponseEntity.badRequest().body("Parámetro inválido: " + e.getName());
     }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error interno del servidor");
     }
-}
+    }
+

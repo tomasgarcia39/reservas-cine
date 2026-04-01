@@ -12,7 +12,8 @@ public enum ErrorCode {
     RESERVA_NO_ENCONTRADA(HttpStatus.NOT_FOUND, "La reserva no existe"),
     HORARIO_INVALIDO(HttpStatus.BAD_REQUEST, "Formato de horario inválido. Use: yyyy-MM-ddTHH:mm:ss"),
     EMAIL_YA_REGISTRADO(HttpStatus.CONFLICT, "El email ya está registrado"),
-    CREDENCIALES_INVALIDAS(HttpStatus.UNAUTHORIZED, "Email o contraseña incorrectos");
+    CREDENCIALES_INVALIDAS(HttpStatus.UNAUTHORIZED, "Email o contraseña incorrectos"),
+    TOKEN_INVALIDO(HttpStatus.UNAUTHORIZED, "El token es inválido o expiró");
     private final HttpStatus status;
     private final String mensaje;
 
