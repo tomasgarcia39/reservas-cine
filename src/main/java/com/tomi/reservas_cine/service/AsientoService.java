@@ -27,6 +27,7 @@ public class AsientoService {
                         a.getSala().getNombre()))
                 .toList();
     }
+
     public void generarAsientos(Sala sala) {
         for (int i = 1; i <= sala.getCapacidad(); i++) {
             Asiento asiento = new Asiento(i, "ESTANDAR", sala);
@@ -38,4 +39,4 @@ public class AsientoService {
         List<Asiento> asientos = asientoRepository.findBySalaId(salaId);
         asientoRepository.deleteAll(asientos);
     }
-    }
+}

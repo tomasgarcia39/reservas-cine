@@ -2,7 +2,6 @@ package com.tomi.reservas_cine.controller;
 
 import com.tomi.reservas_cine.dto.ReservaRequestDTO;
 import com.tomi.reservas_cine.dto.ReservaResponseDTO;
-import com.tomi.reservas_cine.model.Reserva;
 import com.tomi.reservas_cine.service.ReservaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

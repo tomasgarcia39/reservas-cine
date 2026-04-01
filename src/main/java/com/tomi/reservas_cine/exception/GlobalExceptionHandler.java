@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import tools.jackson.databind.ext.javatime.DateTimeParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +29,7 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.badRequest().body(errores);
     }
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
         return ResponseEntity.badRequest().body("Parámetro inválido: " + e.getName());
@@ -39,9 +39,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGenericException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error interno del servidor");
-    }
-    @ExceptionHandler(DateTimeParseException.class)
-    public ResponseEntity<String> handleDateTimeParseException(DateTimeParseException e) {
-        return ResponseEntity.badRequest().body("Formato de horario inválido. Use el formato: yyyy-MM-ddTHH:mm:ss");
     }
 }
