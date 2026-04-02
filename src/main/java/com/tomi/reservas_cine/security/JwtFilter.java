@@ -17,9 +17,11 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final TokenBlacklistService tokenBlacklistService;
 
-    public JwtFilter(JwtService jwtService) {
+    public JwtFilter(JwtService jwtService, TokenBlacklistService tokenBlacklistService) {
         this.jwtService = jwtService;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
 
-        if (jwtService.esValido(token)) {
+        if (jwtService.esValido(token) && !tokenBlacklistService.estaInvalidado(token)) {
             String email = jwtService.extraerEmail(token);
             String rol = jwtService.extraerRol(token);
 

@@ -72,4 +72,8 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
+    public long getExpiracionRestante(String token) {
+        Date expiracion = getClaims(token).getExpiration();
+        return (expiracion.getTime() - System.currentTimeMillis()) / 1000;
+    }
 }

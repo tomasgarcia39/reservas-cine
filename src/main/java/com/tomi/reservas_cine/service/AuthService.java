@@ -3,12 +3,14 @@ package com.tomi.reservas_cine.service;
 import com.tomi.reservas_cine.dto.AuthResponseDTO;
 import com.tomi.reservas_cine.dto.LoginRequestDTO;
 import com.tomi.reservas_cine.dto.RegisterRequestDTO;
+import com.tomi.reservas_cine.dto.RefreshRequestDTO;
 import com.tomi.reservas_cine.exception.AppException;
 import com.tomi.reservas_cine.exception.ErrorCode;
 import com.tomi.reservas_cine.model.Rol;
 import com.tomi.reservas_cine.model.Usuario;
 import com.tomi.reservas_cine.repository.UsuarioRepository;
 import com.tomi.reservas_cine.security.JwtService;
+import com.tomi.reservas_cine.security.TokenBlacklistService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +20,16 @@ public class AuthService {
     private final UsuarioRepository usuarioRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final TokenBlacklistService tokenBlacklistService;
 
     public AuthService(UsuarioRepository usuarioRepository,
                        JwtService jwtService,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       TokenBlacklistService tokenBlacklistService) {
         this.usuarioRepository = usuarioRepository;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     public AuthResponseDTO register(RegisterRequestDTO dto) {
@@ -70,5 +75,12 @@ public class AuthService {
         String nuevoToken = jwtService.generarToken(usuario.getEmail(), usuario.getRol().name());
         String nuevoRefreshToken = jwtService.generarRefreshToken(usuario.getEmail());
         return new AuthResponseDTO(nuevoToken, nuevoRefreshToken, usuario.getEmail(), usuario.getRol().name());
+    }
+
+    public void logout(String token) {
+        if (jwtService.esValido(token)) {
+            long expiracion = jwtService.getExpiracionRestante(token);
+            tokenBlacklistService.invalidar(token, expiracion);
+        }
     }
 }
