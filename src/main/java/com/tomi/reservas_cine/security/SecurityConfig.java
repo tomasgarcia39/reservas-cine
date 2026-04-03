@@ -38,6 +38,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/salas").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/salas/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/funciones").hasAuthority("ROLE_ADMIN")
