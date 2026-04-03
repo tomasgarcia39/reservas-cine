@@ -13,7 +13,8 @@ public enum ErrorCode {
     HORARIO_INVALIDO(HttpStatus.BAD_REQUEST, "Formato de horario inválido. Use: yyyy-MM-ddTHH:mm:ss"),
     EMAIL_YA_REGISTRADO(HttpStatus.CONFLICT, "El email ya está registrado"),
     CREDENCIALES_INVALIDAS(HttpStatus.UNAUTHORIZED, "Email o contraseña incorrectos"),
-    TOKEN_INVALIDO(HttpStatus.UNAUTHORIZED, "El token es inválido o expiró");
+    TOKEN_INVALIDO(HttpStatus.UNAUTHORIZED, "El token es inválido o expiró"),
+    ACCESO_DENEGADO(HttpStatus.FORBIDDEN, "No tenés permiso para realizar esta acción");
     private final HttpStatus status;
     private final String mensaje;
 

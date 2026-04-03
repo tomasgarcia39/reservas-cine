@@ -9,7 +9,8 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombreUsuario;
+    @ManyToOne
+    private Usuario usuario;
 
     @ManyToOne
     private Funcion funcion;
@@ -19,14 +20,14 @@ public class Reserva {
 
     public Reserva() {}
 
-    public Reserva(String nombreUsuario, Funcion funcion, Asiento asiento) {
-        this.nombreUsuario = nombreUsuario;
+    public Reserva(Usuario usuario, Funcion funcion, Asiento asiento) {
+        this.usuario = usuario;
         this.funcion = funcion;
         this.asiento = asiento;
     }
 
     public Long getId() { return id; }
-    public String getNombreUsuario() { return nombreUsuario; }
+    public Usuario getUsuario() { return usuario; }
     public Funcion getFuncion() { return funcion; }
     public Asiento getAsiento() { return asiento; }
 }

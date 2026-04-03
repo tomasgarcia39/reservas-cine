@@ -7,9 +7,12 @@ import com.tomi.reservas_cine.model.Asiento;
 import com.tomi.reservas_cine.model.EstadoAsiento;
 import com.tomi.reservas_cine.model.Funcion;
 import com.tomi.reservas_cine.model.Reserva;
+import com.tomi.reservas_cine.model.Usuario;
 import com.tomi.reservas_cine.repository.AsientoRepository;
 import com.tomi.reservas_cine.repository.FuncionRepository;
 import com.tomi.reservas_cine.repository.ReservaRepository;
+import com.tomi.reservas_cine.repository.UsuarioRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,17 +25,24 @@ public class ReservaService {
     private final ReservaRepository reservaRepository;
     private final AsientoRepository asientoRepository;
     private final FuncionRepository funcionRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public ReservaService(ReservaRepository reservaRepository,
                           AsientoRepository asientoRepository,
-                          FuncionRepository funcionRepository) {
+                          FuncionRepository funcionRepository,
+                          UsuarioRepository usuarioRepository) {
         this.reservaRepository = reservaRepository;
         this.asientoRepository = asientoRepository;
         this.funcionRepository = funcionRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Transactional
     public ReservaResponseDTO reservar(ReservaRequestDTO dto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.CREDENCIALES_INVALIDAS));
+
         Funcion funcion = funcionRepository.findById(dto.funcionId())
                 .orElseThrow(() -> new AppException(ErrorCode.FUNCION_NO_ENCONTRADA));
         Asiento asiento = asientoRepository.findById(dto.asientoId())
@@ -52,12 +62,12 @@ public class ReservaService {
         asiento.setExpiracion(LocalDateTime.now().plusMinutes(10));
         asientoRepository.save(asiento);
 
-        Reserva reserva = new Reserva(dto.nombreUsuario(), funcion, asiento);
+        Reserva reserva = new Reserva(usuario, funcion, asiento);
         Reserva guardada = reservaRepository.save(reserva);
 
         return new ReservaResponseDTO(
                 guardada.getId(),
-                guardada.getNombreUsuario(),
+                guardada.getUsuario().getEmail(),
                 funcion.getPelicula(),
                 funcion.getHorario().toString(),
                 asiento.getNumero()
@@ -65,20 +75,28 @@ public class ReservaService {
     }
 
     public List<ReservaResponseDTO> obtenerReservas() {
-        return reservaRepository.findAll().stream()
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return reservaRepository.findByUsuarioEmail(email).stream()
                 .map(reserva -> new ReservaResponseDTO(
                         reserva.getId(),
-                        reserva.getNombreUsuario(),
+                        reserva.getUsuario().getEmail(),
                         reserva.getFuncion().getPelicula(),
                         reserva.getFuncion().getHorario().toString(),
                         reserva.getAsiento().getNumero()
                 ))
                 .toList();
     }
+
     @Transactional
     public ReservaResponseDTO confirmarReserva(Long reservaId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
         Reserva reserva = reservaRepository.findById(reservaId)
                 .orElseThrow(() -> new AppException(ErrorCode.RESERVA_NO_ENCONTRADA));
+
+        if (!reserva.getUsuario().getEmail().equals(email)) {
+            throw new AppException(ErrorCode.ACCESO_DENEGADO);
+        }
 
         Asiento asiento = reserva.getAsiento();
 
@@ -99,7 +117,7 @@ public class ReservaService {
 
         return new ReservaResponseDTO(
                 reserva.getId(),
-                reserva.getNombreUsuario(),
+                reserva.getUsuario().getEmail(),
                 reserva.getFuncion().getPelicula(),
                 reserva.getFuncion().getHorario().toString(),
                 asiento.getNumero()
