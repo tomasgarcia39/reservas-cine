@@ -3,6 +3,7 @@ package com.tomi.reservas_cine.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -12,12 +13,14 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String SECRET = "clave-super-secreta-de-al-menos-32-caracteres";
+    @Value("${JWT_SECRET}")
+    private String secret;
+
     private static final long EXPIRATION = 1000 * 60 * 15;
     private static final long REFRESH_EXPIRATION = 1000 * 60 * 60 * 24 * 7;
 
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generarToken(String email, String rol) {
@@ -72,6 +75,7 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
+
     public long getExpiracionRestante(String token) {
         Date expiracion = getClaims(token).getExpiration();
         return (expiracion.getTime() - System.currentTimeMillis()) / 1000;
